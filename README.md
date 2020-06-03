@@ -2,7 +2,7 @@
 
 Simple Weight Price Calculator
 
-![awesomebalanza](./assets/img/screenshot.png)
+![awesomebalanza](./assets/img/Screenshot-example.png)
 
 ## About the app
 
