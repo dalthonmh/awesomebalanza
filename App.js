@@ -19,17 +19,32 @@ function App() {
   const [pricePerKilo, setPricePerKilo] = useState(0);
   const [weitght, setWeitght] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
+  const [masaSimbol, setMasaSimbol] = useState('Kg');
 
   const calculateTotalCost = (weitghtParam, pricePerKiloParam) => {
-    let resultFixed = (weitghtParam * pricePerKiloParam).toFixed(2);
-
-    setTotalCost(resultFixed);
+    if (masaSimbol === 'Kg') {
+      let resultFixed = (weitghtParam * pricePerKiloParam).toFixed(2);
+      setTotalCost(resultFixed);
+    } else {
+      let resultFixed = ((weitghtParam * pricePerKiloParam) / 1000).toFixed(2);
+      setTotalCost(resultFixed);
+    }
   };
 
   const cleanInputs = () => {
     setPricePerKilo(0);
     setWeitght(0);
     setTotalCost(0);
+  };
+
+  const converKiloToGramsAndViceVersa = () => {
+    if (masaSimbol === 'Kg') {
+      setMasaSimbol('gr');
+      setWeitght(weitght / 1000);
+    } else {
+      setMasaSimbol('Kg');
+      setWeitght(weitght * 1000);
+    }
   };
 
   return (
@@ -69,7 +84,9 @@ function App() {
               }}
               value={weitght}
             />
-            <Text style={styles.moneySimbol}>Kg</Text>
+            <TouchableOpacity onPress={converKiloToGramsAndViceVersa}>
+              <Text style={styles.moneySimbol}>{masaSimbol}</Text>
+            </TouchableOpacity>
           </View>
         </View>
         <View style={styles.formInput}>
@@ -105,21 +122,21 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(29,185,84,0.9)',
     justifyContent: 'center',
     alignSelf: 'center',
-    marginTop: 28,
+    marginTop: 20,
   },
   btnText: {
     color: '#FFF',
     textAlign: 'center',
-    fontSize: 24,
+    fontSize: 20,
     fontFamily: 'PoetsenOne-Regular',
   },
   formInput: {
-    marginTop: 40,
+    marginTop: 25,
   },
   label: {
     color: '#BFBFBF',
     textAlign: 'left',
-    fontSize: 24,
+    fontSize: 20,
     fontFamily: 'PoetsenOne-Regular',
   },
   inputGroup: {
@@ -131,23 +148,23 @@ const styles = StyleSheet.create({
   },
   moneySimbol: {
     color: '#BFBFBF',
-    fontSize: 24,
+    fontSize: 20,
     fontFamily: 'PoetsenOne-Regular',
-    marginTop: 8,
+    marginTop: 0,
   },
   inputNumberPrice: {
     color: '#FFF',
-    fontSize: 24,
+    fontSize: 20,
     fontFamily: 'PoetsenOne-Regular',
-    marginTop: 4,
+    marginTop: 0,
     textAlign: 'right',
     width: '90%',
   },
   inputNumberWeight: {
     color: '#FFF',
-    fontSize: 24,
+    fontSize: 20,
     fontFamily: 'PoetsenOne-Regular',
-    marginTop: 4,
+    marginTop: 0,
     textAlign: 'left',
     width: '90%',
   },
@@ -170,7 +187,7 @@ const styles = StyleSheet.create({
   },
   textNumberResult: {
     color: '#FFF',
-    fontSize: 24,
+    fontSize: 20,
     fontFamily: 'PoetsenOne-Regular',
   },
   about: {
