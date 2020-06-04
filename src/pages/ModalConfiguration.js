@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useContext} from 'react';
 import {
   StyleSheet,
   View,
@@ -20,10 +20,13 @@ import RadioForm, {
   RadioButtonInput,
   RadioButtonLabel,
 } from 'react-native-simple-radio-button';
-
+import {Picker} from '@react-native-community/picker';
 import Icon from 'react-native-vector-icons/Feather';
+import IconAntDesign from 'react-native-vector-icons/AntDesign';
+import {AvailableLanguages} from '../translations';
+import {LocalizationContext} from '../LocalizationContext';
 
-function App(props) {
+function ModalConfiguration(props) {
   const {
     moneySimbol,
     storeMoneySimbol,
@@ -33,14 +36,21 @@ function App(props) {
     setRadioButtonIndex,
     setMoneySimbol,
     storeRadioButtonIndex,
+    actualLanguage,
+    setActualLanguage,
+    storeActualLanguage,
+    storeMasaSymbol,
+    setMasaSimbol,
   } = props;
 
+  const {translations, setAppLanguage} = useContext(LocalizationContext);
+
   var radio_props = [
-    {label: 'Verde', value: 0, color: '#1db954'},
-    {label: 'Azul', value: 1, color: '#207EBC'},
-    {label: 'Rosa', value: 2, color: '#EE6565'},
-    {label: 'Naranja', value: 3, color: '#EFB517'},
-    {label: 'Violeta', value: 4, color: '#C31FEB'},
+    {label: translations.GREEN, value: 0, color: '#1db954'},
+    {label: translations.BLUE, value: 1, color: '#207EBC'},
+    {label: translations.PINK, value: 2, color: '#EE6565'},
+    {label: translations.ORANGE, value: 3, color: '#EFB517'},
+    {label: translations.VIOLET, value: 4, color: '#C31FEB'},
   ];
 
   return (
@@ -49,8 +59,8 @@ function App(props) {
         <View>
           <Text style={styles.title}>awesomebalanza</Text>
         </View>
-        <View style={styles.formInput}>
-          <Text style={styles.label}>Tema</Text>
+        <View>
+          <Text style={styles.label}>{translations.THEME}</Text>
           <View style={styles.radioFormContainer}>
             <RadioForm
               formHorizontal={true}
@@ -70,7 +80,7 @@ function App(props) {
                         setRadioButtonIndex(value);
                         storeRadioButtonIndex(value);
                         ToastAndroid.show(
-                          `${obj.label} aplicado`,
+                          `${obj.label} ${translations.APPLIED}`,
                           ToastAndroid.SHORT,
                         );
                         storeColorTheme(obj.color);
@@ -92,7 +102,7 @@ function App(props) {
                         storeRadioButtonIndex(value);
                         setRadioButtonIndex(value);
                         ToastAndroid.show(
-                          `${obj.label} aplicado`,
+                          `${obj.label} ${translations.APPLIED}`,
                           ToastAndroid.SHORT,
                         );
                         storeColorTheme(obj.color);
@@ -107,8 +117,10 @@ function App(props) {
             </RadioForm>
           </View>
         </View>
-        <View style={{...styles.formInput, ...styles.inputGroup}}>
-          <Text style={styles.label}>Símbolo</Text>
+        <View style={styles.inputGroup}>
+          <Text style={{...styles.label, ...styles.labelMoney}}>
+            {translations.MONEY_SIMBOL}
+          </Text>
           <TextInput
             placeholder={'0'}
             style={styles.inputSimbol}
@@ -119,6 +131,32 @@ function App(props) {
             defaultValue={moneySimbol}
             value={moneySimbol}
           />
+        </View>
+        <View style={styles.formInput}>
+          <Text style={styles.label}>{translations.LANGUAGE}</Text>
+          <View style={styles.pickerWrapper}>
+            <IconAntDesign name="caretdown" style={styles.pickerIcon} />
+            <Picker
+              selectedValue={actualLanguage}
+              style={styles.pikerStyles}
+              prompt="Available languages"
+              onValueChange={(itemValue) => {
+                setActualLanguage(itemValue);
+                setAppLanguage(itemValue);
+                storeActualLanguage(itemValue);
+
+                storeMasaSymbol(translations.SYMBOL_KILO);
+                setMasaSimbol(translations.SYMBOL_KILO);
+              }}>
+              {AvailableLanguages.map((language, index) => (
+                <Picker.Item
+                  index={index}
+                  label={language.label}
+                  value={language.value}
+                />
+              ))}
+            </Picker>
+          </View>
         </View>
       </KeyboardAvoidingView>
       <View>
@@ -147,22 +185,29 @@ const styles = StyleSheet.create({
     fontFamily: 'PoetsenOne-Regular',
     textAlign: 'center',
     marginTop: 20,
+    marginBottom: 20,
   },
-  //   formInput: {
-  //     marginTop: 25,
-  //   },
+  formInput: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 25,
+  },
   label: {
     color: '#BFBFBF',
     textAlign: 'left',
     fontSize: 20,
     fontFamily: 'PoetsenOne-Regular',
-    width: '25%',
+    width: '45%',
+  },
+  labelMoney: {
+    width: '65%',
   },
   inputSimbol: {
     color: '#FFF',
     fontSize: 20,
     fontFamily: 'PoetsenOne-Regular',
-    width: '75%',
+    width: '35%',
     textAlign: 'right',
   },
   radioFormContainer: {
@@ -185,6 +230,31 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#707070',
   },
+  pikerStyles: {
+    height: 45,
+    width: 160,
+    color: '#FFF',
+  },
+  pickerWrapper: {
+    borderColor: '#707070',
+    borderWidth: 1,
+    backgroundColor: '#191919',
+    borderRadius: 4,
+    paddingLeft: 15,
+  },
+  pickerIcon: {
+    color: '#FFF',
+    position: 'absolute',
+    zIndex: 10,
+    bottom: 15,
+    right: 10,
+    fontSize: 20,
+  },
+
+  pickerContent: {
+    color: 'green',
+    backgroundColor: 'transparent',
+  },
   iconChevronDown: {
     position: 'absolute',
     right: 0,
@@ -192,4 +262,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default ModalConfiguration;
