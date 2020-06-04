@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React, {useState} from 'react';
+import React from 'react';
 import {
   StyleSheet,
   View,
@@ -26,12 +26,13 @@ import Icon from 'react-native-vector-icons/Feather';
 function App(props) {
   const {
     moneySimbol,
-    setMoneySimbol,
-    moneyDefaultSimbol,
-    setMoneyDefaultSimbol,
+    storeMoneySimbol,
+    storeColorTheme,
     setColorTheme,
-    value3Index,
-    setvalue3Index,
+    radioButtonIndex,
+    setRadioButtonIndex,
+    setMoneySimbol,
+    storeRadioButtonIndex,
   } = props;
 
   var radio_props = [
@@ -51,50 +52,57 @@ function App(props) {
         <View style={styles.formInput}>
           <Text style={styles.label}>Tema</Text>
           <View style={styles.radioFormContainer}>
-            <RadioForm formHorizontal={false} animation={true}>
-              {/* To create radio buttons, loop through your array of options */}
+            <RadioForm
+              formHorizontal={true}
+              styles={styles.radioForm}
+              animation={true}>
               {radio_props.map((obj, i) => (
-                <RadioButton
-                  style={styles.radioButtonContainer}
-                  labelHorizontal={true}
-                  key={i}>
-                  {/*  You can set RadioButtonLabel before RadioButtonInput */}
-                  <RadioButtonInput
-                    obj={obj}
-                    index={i}
-                    isSelected={value3Index === i}
-                    onPress={(value) => {
-                      setvalue3Index(value);
-                      ToastAndroid.show(
-                        `${obj.label} aplicado`,
-                        ToastAndroid.SHORT,
-                      );
-                      setColorTheme(obj.color);
-                    }}
-                    borderWidth={3}
-                    buttonInnerColor={obj.color}
-                    buttonOuterColor={obj.color}
-                    buttonSize={15}
-                    buttonOuterSize={25}
-                    buttonStyle={{}}
-                    buttonWrapStyle={styles.buttonWrapStyle}
-                  />
-                  <RadioButtonLabel
-                    obj={obj}
-                    index={i}
-                    labelHorizontal={true}
-                    onPress={(value) => {
-                      setvalue3Index(value);
-                      ToastAndroid.show(
-                        `${obj.label} aplicado`,
-                        ToastAndroid.SHORT,
-                      );
-                      setColorTheme(obj.color);
-                    }}
-                    labelStyle={styles.radioButtonLabelStyle}
-                    labelWrapStyle={{}}
-                  />
-                </RadioButton>
+                <View style={styles.radioButtonContainer}>
+                  <RadioButton
+                    labelHorizontal={false}
+                    style={styles.radioButton}
+                    key={i}>
+                    <RadioButtonInput
+                      obj={obj}
+                      index={i}
+                      isSelected={radioButtonIndex === i}
+                      onPress={(value) => {
+                        setRadioButtonIndex(value);
+                        storeRadioButtonIndex(value);
+                        ToastAndroid.show(
+                          `${obj.label} aplicado`,
+                          ToastAndroid.SHORT,
+                        );
+                        storeColorTheme(obj.color);
+                        setColorTheme(obj.color);
+                      }}
+                      borderWidth={3}
+                      buttonInnerColor={obj.color}
+                      buttonOuterColor={obj.color}
+                      buttonSize={15}
+                      buttonOuterSize={25}
+                      buttonStyle={styles.radioButtonInput}
+                      buttonWrapStyle={styles.buttonWrapStyle}
+                    />
+                    <RadioButtonLabel
+                      obj={obj}
+                      index={i}
+                      labelHorizontal={false}
+                      onPress={(value) => {
+                        storeRadioButtonIndex(value);
+                        setRadioButtonIndex(value);
+                        ToastAndroid.show(
+                          `${obj.label} aplicado`,
+                          ToastAndroid.SHORT,
+                        );
+                        storeColorTheme(obj.color);
+                        setColorTheme(obj.color);
+                      }}
+                      labelStyle={styles.radioButtonLabelStyle}
+                      labelWrapStyle={{}}
+                    />
+                  </RadioButton>
+                </View>
               ))}
             </RadioForm>
           </View>
@@ -105,10 +113,10 @@ function App(props) {
             placeholder={'0'}
             style={styles.inputSimbol}
             onChangeText={(value) => {
+              storeMoneySimbol(value);
               setMoneySimbol(value);
-              setMoneyDefaultSimbol(value);
             }}
-            defaultValue={moneyDefaultSimbol}
+            defaultValue={moneySimbol}
             value={moneySimbol}
           />
         </View>
@@ -163,9 +171,7 @@ const styles = StyleSheet.create({
   },
   radioButtonContainer: {
     marginVertical: 10,
-  },
-  buttonWrapStyle: {
-    marginLeft: 10,
+    marginHorizontal: 5,
   },
   radioButtonLabelStyle: {
     fontSize: 16,

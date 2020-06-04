@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -19,17 +19,133 @@ import {
 
 import Icon from 'react-native-vector-icons/Feather';
 import ModalConfiguration from './ModalConfiguration';
+import AsyncStorage from '@react-native-community/async-storage';
 
 function App() {
   const [pricePerKilo, setPricePerKilo] = useState(0);
   const [weitght, setWeitght] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
   const [masaSimbol, setMasaSimbol] = useState('Kg');
-  const [moneySimbol, setMoneySimbol] = useState('S/');
-  const [moneyDefaultSimbol, setMoneyDefaultSimbol] = useState('S/');
+  const [moneySimbol, setMoneySimbol] = useState('');
   const [showModal, setShowModal] = useState(false);
-  const [colorTheme, setColorTheme] = useState('#1db954');
-  const [value3Index, setvalue3Index] = useState(0);
+  const [colorTheme, setColorTheme] = useState('');
+  const [radioButtonIndex, setRadioButtonIndex] = useState(0);
+
+  const [configurationMoneyLoaded, setConfigurationMoneyLoaded] = useState(
+    false,
+  );
+  const [configurationThemeLoaded, setConfigurationThemeLoaded] = useState(
+    false,
+  );
+  const [
+    configurationRadioIndexLoaded,
+    setConfigurationRadioIndexLoaded,
+  ] = useState(false);
+
+  useEffect(() => {
+    if (
+      !configurationMoneyLoaded ||
+      !configurationThemeLoaded ||
+      !configurationRadioIndexLoaded
+    ) {
+      loadMoneySimbolConfiguration();
+      loadColorThemeConfiguration();
+      loadRadioConfiguration();
+    }
+  });
+
+  const loadMoneySimbolConfiguration = async () => {
+    try {
+      const valueMoney = await AsyncStorage.getItem('MONEY_SIMBOL');
+      if (valueMoney !== null) {
+        setMoneySimbol(valueMoney);
+      } else {
+        try {
+          await AsyncStorage.setItem('MONEY_SIMBOL', 'S/');
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
+
+    setConfigurationMoneyLoaded(true);
+  };
+
+  // eslint-disable-next-line no-unused-vars
+  const clearAll = async () => {
+    try {
+      await AsyncStorage.clear();
+    } catch (e) {
+      console.log(e);
+    }
+
+    console.log('Done.');
+  };
+
+  const loadColorThemeConfiguration = async () => {
+    try {
+      const valueTheme = await AsyncStorage.getItem('COLOR_THEME');
+      if (valueTheme !== null) {
+        setColorTheme(valueTheme);
+      } else {
+        try {
+          await AsyncStorage.setItem('COLOR_THEME', '#1db954');
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
+
+    setConfigurationThemeLoaded(true);
+  };
+
+  const loadRadioConfiguration = async () => {
+    try {
+      const valueRadioIndex = await AsyncStorage.getItem('RADIOBUTTON_INDEX');
+      if (valueRadioIndex !== null) {
+        let valueRadioIndexInt = parseInt(valueRadioIndex, 10);
+        setRadioButtonIndex(valueRadioIndexInt);
+      } else {
+        try {
+          await AsyncStorage.setItem('RADIOBUTTON_INDEX', '0');
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
+    setConfigurationRadioIndexLoaded(true);
+  };
+
+  const storeMoneySimbol = async (value) => {
+    try {
+      await AsyncStorage.setItem('MONEY_SIMBOL', value);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const storeColorTheme = async (value) => {
+    try {
+      await AsyncStorage.setItem('COLOR_THEME', value);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const storeRadioButtonIndex = async (value) => {
+    try {
+      let valueString = value.toString();
+      await AsyncStorage.setItem('RADIOBUTTON_INDEX', valueString);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const calculateTotalCost = (weitghtParam, pricePerKiloParam) => {
     if (masaSimbol === 'Kg') {
@@ -45,6 +161,7 @@ function App() {
     setPricePerKilo(0);
     setWeitght(0);
     setTotalCost(0);
+    //clearAll(); // borra el storage
   };
 
   const converKiloToGramsAndViceVersa = () => {
@@ -132,12 +249,14 @@ function App() {
       <Modal visible={showModal} animationType="slide">
         <ModalConfiguration
           setShowModal={setShowModal}
+          moneySimbol={moneySimbol}
           setMoneySimbol={setMoneySimbol}
-          moneyDefaultSimbol={moneyDefaultSimbol}
-          setMoneyDefaultSimbol={setMoneyDefaultSimbol}
+          storeMoneySimbol={storeMoneySimbol}
           setColorTheme={setColorTheme}
-          value3Index={value3Index}
-          setvalue3Index={setvalue3Index}
+          storeColorTheme={storeColorTheme}
+          radioButtonIndex={radioButtonIndex}
+          setRadioButtonIndex={setRadioButtonIndex}
+          storeRadioButtonIndex={storeRadioButtonIndex}
         />
       </Modal>
     </>
