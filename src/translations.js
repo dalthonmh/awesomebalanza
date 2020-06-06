@@ -1,5 +1,5 @@
 import LocalizedStrings from 'react-native-localization';
-export const DEFAULT_LANGUAGE = 'es';
+export const DEFAULT_LANGUAGE = 'en';
 
 const translations = {
   es: {
@@ -134,4 +134,23 @@ export const AvailableLanguages = [
   {language: 'Portugués', label: 'Portugués', value: 'pt'},
 ];
 
+/**
+ * Next languages:
+ * Bengalí
+ * Ruso
+ * Indonesio
+ * Urdu
+ * Alemán
+ * Japonés
+ * Panyabí occidental
+ * Javanés
+ * Chino Wu
+ * Telugú
+ * Turco
+ * Coreano
+ * fuente: https://es.wikipedia.org/wiki/Anexo:Idiomas_por_el_total_de_hablantes
+ * code iso: http://utils.mucattu.com/iso_639-1.html
+ * traductor: https://context.reverso.net/traduccion/
+ *
+ */
 export default new LocalizedStrings(translations);

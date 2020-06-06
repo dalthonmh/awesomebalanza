@@ -104,7 +104,7 @@ function HomePage() {
         setMoneySimbol(valueMoney);
       } else {
         try {
-          await AsyncStorage.setItem('MONEY_SIMBOL', 'S/');
+          await AsyncStorage.setItem('MONEY_SIMBOL', '$');
         } catch (e) {
           console.log(e);
         }
