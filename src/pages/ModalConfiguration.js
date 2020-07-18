@@ -30,6 +30,8 @@ function ModalConfiguration(props) {
   const {
     moneySimbol,
     storeMoneySimbol,
+    calculateMode,
+    setCalculateMode,
     storeColorTheme,
     setColorTheme,
     radioButtonIndex,
@@ -117,6 +119,7 @@ function ModalConfiguration(props) {
             </RadioForm>
           </View>
         </View>
+        {/* MONEY SIMBOL */}
         <View style={styles.inputGroup}>
           <Text style={{...styles.label, ...styles.labelMoney}}>
             {translations.MONEY_SIMBOL}
@@ -132,6 +135,28 @@ function ModalConfiguration(props) {
             value={moneySimbol}
           />
         </View>
+        {/* OPCION DE CALCULO */}
+        <View style={styles.formInput}>
+          <Text style={styles.label}>Calcular</Text>
+          <View style={styles.pickerWrapper}>
+            <IconAntDesign name="caretdown" style={styles.pickerIcon} />
+            <Picker
+              selectedValue={calculateMode}
+              style={styles.pikerStyles}
+              onValueChange={(itemValue) => {
+                setCalculateMode(itemValue);
+                props.setShowModal(false);
+                ToastAndroid.show(
+                  `${itemValue} ${translations.APPLIED}`,
+                  ToastAndroid.SHORT,
+                );
+              }}>
+              <Picker.Item label="1. Precio" value="price" />
+              <Picker.Item label="2. Peso" value="weight" />
+            </Picker>
+          </View>
+        </View>
+        {/* LANGUAGE */}
         <View style={styles.formInput}>
           <Text style={styles.label}>{translations.LANGUAGE}</Text>
           <View style={styles.pickerWrapper}>
@@ -150,6 +175,7 @@ function ModalConfiguration(props) {
               }}>
               {AvailableLanguages.map((language, index) => (
                 <Picker.Item
+                  key={index}
                   index={index}
                   label={language.label}
                   value={language.value}
